@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>การเงิน - genY</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background-color: #ff6600;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        nav {
+            text-align: center;
+            background-color: #ff9900;
+            padding: 10px;
+        }
+        nav a {
+            color: white;
+            margin: 0 15px;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .container {
+            padding: 20px;
+        }
+        footer {
+            background-color: #ff6600;
+            color: white;
+            text-align: center;
+            padding: 10px;
+            position: fixed;
+            width: 100%;
+            bottom: 0;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+        }
+        #result {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>การเงิน - genY</h1>
+    </header>
+    <nav>
+        <a href="#home">หน้าแรก</a>
+        <a href="#about">เกี่ยวกับเรา</a>
+        <a href="#products">ผลิตภัณฑ์</a>
+        <a href="#contact">ติดต่อเรา</a>
+    </nav>
+    <div class="container">
+        <h2>คำนวณเบี้ยประกันภัยรถยนต์</h2>
+        <div class="form-group">
+            <label for="carBrand">ยี่ห้อรถ</label>
+            <select id="carBrand" onchange="updateCarModels()">
+                <option value="toyota">Toyota</option>
+                <option value="honda">Honda</option>
+                <option value="mazda">Mazda</option>
+                <option value="ford">Ford</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="carModel">รุ่นรถ</label>
+            <select id="carModel">
+                <!-- ตัวเลือกจะถูกเติมโดย JavaScript -->
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="manufactureYear">ปีที่ผลิต (ค.ศ. หรือ พ.ศ.)</label>
+            <input type="number" id="manufactureYear" min="1900" max="2100">
+        </div>
+        <div class="form-group">
+            <label for="yearType">เลือกประเภทปี</label>
+            <select id="yearType">
+                <option value="AD">ค.ศ.</option>
+                <option value="BE">พ.ศ.</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="driverAge">อายุผู้ขับขี่ (ปี)</label>
+            <input type="number" id="driverAge" min="18" max="100">
+        </div>
+        <div class="form-group">
+            <label for="hasDashCam">ติดตั้งกล้องติดรถยนต์</label>
+            <select id="hasDashCam">
+                <option value="yes">ใช่</option>
+                <option value="no">ไม่ใช่</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="claimHistory">ประวัติการเคลมประกัน</label>
+            <select id="claimHistory">
+                <option value="none">ไม่มี</option>
+                <option value="one">เคลม 1 ครั้ง</option>
+                <option value="more">เคลมมากกว่า 1 ครั้ง</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="usageType">ประเภทการใช้งานรถยนต์</label>
+            <select id="usageType">
+                <option value="personal">ส่วนบุคคล</option>
+                <option value="commercial">พาณิชย์</option>
+            </select>
+        </div>
+        <button onclick="calculateInsurance()">คำนวณเบี้ยประกันภัย</button>
+        <div id="result"></div>
+    </div>
+    <footer>
+        <p>&copy; 2024 การเงิน - genY. All rights reserved.</p>
+    </footer>
+
+    <script>
+        function updateCarModels() {
+            var carBrand = document.getElementById("carBrand").value;
+            var carModel = document.getElementById("carModel");
+
+            // ล้างตัวเลือกเดิม
+            carModel.innerHTML = "";
+
+            // เติมตัวเลือกรุ่นรถตามยี่ห้อรถ
+            var models = {
+                toyota: ["Camry", "Corolla", "Hilux"],
+                honda: ["Civic", "Accord", "CR-V"],
+                mazda: ["Mazda3", "CX-5", "BT-50"],
+                ford: ["Fiesta", "Focus", "Ranger"]
+            };
+
+            models[carBrand].forEach(function(model) {
+                var option = document.createElement("option");
+                option.value = model;
+                option.textContent = model;
+                carModel.appendChild(option);
+            });
+        }
+
+        function calculateInsurance() {
+            var carBrand = document.getElementById("carBrand").value;
+            var carModel = document.getElementById("carModel").value;
+            var manufactureYear = document.getElementById("manufactureYear").value;
+            var yearType = document.getElementById("yearType").value;
+            var driverAge = document.getElementById("driverAge").value;
+            var hasDashCam = document.getElementById("hasDashCam").value;
+            var claimHistory = document.getElementById("claimHistory").value;
+            var usageType = document.getElementById("usageType").value;
+
+            // แปลงปีที่ผลิตเป็น ค.ศ. หากเลือกปีเป็น พ.ศ.
+            if (yearType === "BE") {
+                manufactureYear = manufactureYear - 543;
+            }
+
+            // คำนวณอายุรถ
+            var currentYear = new Date().getFullYear();
+            var carAge = currentYear - manufactureYear;
+
+            // ตัวอย่างการคำนวณเบี้ยประกันภัยเบื้องต้น
+            var basePrice = 5000; // ราคาเริ่มต้น
+
+            // ปรับราคาตามยี่ห้อรถ
+            if (carBrand === "toyota") basePrice += 1000;
+            if (carBrand === "honda") basePrice += 900;
+            if (carBrand === "mazda") basePrice += 800;
+            if (
